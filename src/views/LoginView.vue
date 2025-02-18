@@ -294,9 +294,10 @@
                     loginForm.value = cookieLoginInfo;
                 }
             }
+
+            regFormRef.value.resetFields()
+            loginFormRef.value.resetFields()
         });
-
-
     };
 
     const handleRegister = async ()=>{

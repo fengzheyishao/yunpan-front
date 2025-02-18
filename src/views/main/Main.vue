@@ -50,7 +50,7 @@
             @keyup.enter="handleSearch"
           >
             <template #suffix>
-              <el-icon @click="handleSearch" title="搜索">
+              <el-icon @click="handleSearch" title="搜索" style="cursor: pointer;">
                 <Search />
               </el-icon>
             </template>

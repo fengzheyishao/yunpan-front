@@ -73,7 +73,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 
 const props = defineProps({
     dataSource: Object,
@@ -114,13 +114,17 @@ const tableHeight = ref(
     : window.innerHeight - topHeight - props.options.extHeight
 );
 
+window.addEventListener('resize', () => {
+    tableHeight.value = props.options.tableHeight
+    ? props.options.tableHeight
+    : window.innerHeight - topHeight - props.options.extHeight
+})
+
 const init = () => {
   if (props.initFetch && props.fetch) {
     props.fetch();
   }
 };
-
-init();
 
 const eltableRef = ref();
 
@@ -158,6 +162,10 @@ const handlePageNoChange = (pageNo) => {
   props.dataSource.pageNo = pageNo;
   props.fetch();
 };
+
+onMounted(() => {
+    init();
+})
 
 </script>
 

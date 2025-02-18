@@ -1,7 +1,12 @@
 <template>
   <div>
     <div class="top">
-      <el-button type="success" class="btn"  @click="delShare" :disabled="selectIdList.length == 0">
+      <el-button
+        type="success"
+        class="btn"
+        @click="delShare"
+        :disabled="selectIdList.length == 0"
+      >
         <el-icon class="iconfont">
           <RemoveFilled />
         </el-icon>
@@ -15,52 +20,53 @@
         :dataSource="tableData"
         :fetch="loadDataList"
         :options="tableOptions"
+        @rowClick="rowClick"
         @rowSelected="rowSelected"
       >
-      <template #fileName="{ index, row }">
-        <div
-          class="file-item"
-          @mouseenter="showOp(row)"
-          @mouseleave="cancelShowOp(row)"
+        <template #fileName="{ index, row }">
+          <div
+            class="file-item"
+            @mouseenter="showOp(row)"
+            @mouseleave="cancelShowOp(row)"
+          >
+            <template
+              v-if="(row.fileType == 3 || row.fileType == 1) && row.status == 2"
             >
-              <template
-                v-if="(row.fileType == 3 || row.fileType == 1) && row.status == 2"
-              >
-                <Icon :cover="row.fileCover" :width="32"></Icon>
-              </template>
-              <template v-else>
-                <Icon
-                  v-if="row.folderType == 0"
-                  :fileType="row.fileType"
-                ></Icon>
-                <Icon v-if="row.folderType == 1" :fileType="0"></Icon>
-              </template>
-              <div class="file-name" v-if="!row.showEdit" :title="row.fileName">
-                <span
-                class="span-fn" style="cursor: pointer;">
+              <Icon :cover="row.fileCover" :width="32"></Icon>
+            </template>
+            <template v-else>
+              <Icon v-if="row.folderType == 0" :fileType="row.fileType"></Icon>
+              <Icon v-if="row.folderType == 1" :fileType="0"></Icon>
+            </template>
+            <div class="file-name" v-if="!row.showEdit" :title="row.fileName">
+              <span class="span-fn" style="cursor: pointer">
                 {{ row.fileName }}
-                </span>
-              </div>
-              <div class="op" v-if="(row.showOp && row.fileId)">
-                  <span class="btn-span" @click="copy(row)">复制链接</span>
-                  <span class="btn-span" @click="cancelShare(row)">取消分享</span>
-              </div>
+              </span>
+            </div>
+            <div class="op" v-if="row.showOp && row.fileId">
+              <span class="btn-span" @click.stop="copy(row)">复制链接</span>
+              <span class="btn-span" @click.stop="cancelShare(row)">取消分享</span>
+            </div>
           </div>
-      </template>
-      <template #expireTime="{ index, row }">
-        {{ row.validType == 3 ? '永久' : row.expireTime }}
-      </template>
+        </template>
+        <template #expireTime="{ index, row }">
+          {{ row.validType == 3 ? "永久" : row.expireTime }}
+        </template>
       </Table>
     </div>
+    <ShareDialog ref="dialogRef"> </ShareDialog>
   </div>
 </template>
 
 <script setup>
-import { ref, getCurrentInstance, onMounted } from 'vue';
-import { ElMessageBox } from 'element-plus';
+import { ref, getCurrentInstance, onMounted, reactive } from "vue";
+import { ElMessageBox } from "element-plus";
+import ShareDialog from "./ShareDialog.vue";
 
 import useClipboard from "vue-clipboard3";
 const { toClipboard } = useClipboard();
+
+const dialogRef = ref();
 
 const tableData = ref({});
 
@@ -95,9 +101,6 @@ const tableOptions = ref({
 
 const { proxy } = getCurrentInstance();
 
-
-
-
 /* list {
   code: "Xhkew"
   expireTime: null
@@ -118,79 +121,79 @@ pageSize: 15
 pageTotal: 1
 totalCount: 6
 */
-const loadDataList = async ()=> {
+const loadDataList = async () => {
   let params = {
     pageNo: tableData.value.pageNo,
     pageSize: tableData.value.pageSize,
-  }
+  };
   let res = await proxy.$api.loadShareList(params);
   if (!res) {
     return;
   }
   tableData.value = res;
   // console.log(res);
-}
+};
 
-const showOp = (row)=>{
-  tableData.value.list.forEach(element => {
+const showOp = (row) => {
+  tableData.value.list.forEach((element) => {
     element.shopOp = false;
   });
   row.showOp = true;
-}
+};
 
-const cancelShowOp = (row)=>{
+const cancelShowOp = (row) => {
   row.showOp = false;
-}
+};
 
 const shareUrl = ref(document.location.origin + "/share/");
 
-const copy = async (row)=>{
+const copy = async (row) => {
   await toClipboard(`链接:${shareUrl.value}${row.shareId} 提取码: ${row.code}`);
   proxy.Message.success("复制成功");
-}
+};
 
 const selectIdList = ref([]);
 
-const rowSelected = (rows)=>{
+const rowClick = (row) => {
+  dialogRef.value.show(row);
+};
+
+const rowSelected = (rows) => {
   selectIdList.value = [];
   rows.forEach((item) => {
     selectIdList.value.push(item.shareId);
   });
-}
+};
 
 const cancelShareIdList = ref([]);
 
-const cancelShare = (row)=>{
+const cancelShare = (row) => {
   cancelShareIdList.value = [row.shareId];
   cancelShareDone();
-}
+};
 
-const delShare = ()=>{
+const delShare = () => {
   if (selectIdList.value.length == 0) return;
   cancelShareIdList.value = selectIdList.value;
   cancelShareDone();
-}
+};
 
-const cancelShareDone = ()=>{
-  ElMessageBox.confirm(`你确定要取消分享吗？`,
-    '提示', {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'info',
-    }
-  ).then(
-    async ()=>{
+const cancelShareDone = () => {
+  ElMessageBox.confirm(`你确定要取消分享吗？`, "提示", {
+    confirmButtonText: "确定",
+    cancelButtonText: "取消",
+    type: "info",
+  })
+    .then(async () => {
       let params = {
-        shareIds: cancelShareIdList.value.join(',')
+        shareIds: cancelShareIdList.value.join(","),
       };
       let res = await proxy.$api.cancelShareFile(params);
       proxy.Message.success("取消分享成功");
       loadDataList();
-    }
-  ).catch();
-}
-
-
+    })
+    .catch();
+};
 </script>
 
 <style lang="less" scoped>
@@ -207,46 +210,45 @@ const cancelShareDone = ()=>{
   }
 }
 
-.showTable-class{
-  padding:5px 15px 0 15px;
+.showTable-class {
+  padding: 5px 15px 0 15px;
   width: 100%;
-  .file-item{
+  .file-item {
     display: flex;
     align-items: center;
 
-    .file-name{
+    .file-name {
       display: flex;
       margin-left: 8px;
     }
     .op {
-        margin-right: 10px;
-        width: 90%;
-        display: flex;
-        justify-content: end;
-        .btn-span{
-          padding-left: 15px;
-          cursor: pointer;
-          transition: all 0.2s ease;
+      margin-right: 10px;
+      width: 90%;
+      display: flex;
+      justify-content: end;
+      .btn-span {
+        padding-left: 15px;
+        cursor: pointer;
+        transition: all 0.2s ease;
 
-          &:hover{
-            color: #db6262;
-            font-size: large;
-          }
+        &:hover {
+          color: #db6262;
+          font-size: large;
         }
-        &:hover .btn-span:not(:hover){
-          color: #aaabbb;
-          filter: grayscale(60%);
-          font-size: small;
-        }
+      }
+      &:hover .btn-span:not(:hover) {
+        color: #aaabbb;
+        filter: grayscale(60%);
+        font-size: small;
+      }
     }
   }
 }
 
-.span-fn{
+.span-fn {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   width: 300px;
 }
-
 </style>

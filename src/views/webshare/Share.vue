@@ -215,6 +215,11 @@ const preview = (data) => {
 };
 
 const download = async (fileId) => {
+    if (!proxy.VueCookies.get("userInfo")) {
+        router.push("/login?redirectUrl=" + route.path);
+        proxy.Message.warning("尚未登陆,请登录");
+        return;
+    }
     let res = await proxy.$api.shareCreateDownloadUrl(shareId, fileId);
     if (!res) return;
     window.location.href = `/api/showShare/download/` + res;

@@ -253,4 +253,10 @@ export default{
             params,
         });
     },
+    shareDownloadInfo(params) {
+        return request({
+            url: "/showShare/shareDownloadInfo",
+            params,
+        });
+    }
 }
