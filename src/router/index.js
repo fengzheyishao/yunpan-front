@@ -15,11 +15,20 @@ const router = createRouter({
       children: [
         {
           path: '/',
-          redirect: "/main/all"
+          redirect: "/home/index"
+        },
+        {
+          path: '/home/index',
+          name: '首页',
+          meta: {
+            needLogin: true,
+            menuCode: "home"
+          },
+          component: () => import("@/views/home/index.vue")
         },
         {
           path: '/main/:category',
-          name: '首页',
+          name: '文件',
           meta: {
             needLogin: true,
             menuCode: "main"

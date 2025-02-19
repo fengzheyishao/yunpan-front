@@ -16,16 +16,21 @@
         :initFetch="false"
         @rowSelected="rowSelected"
       >
+        <template #avatar="{ index, row }">
+          <el-avatar
+            style="margin-top: 5px"
+            :size="48"
+            :src="proxy.$api.getAvatar(row.userId, new Date().getDate())"
+          />
+        </template>
       </Table>
     </div>
+    <span>下载次数: <i style="color: red;">{{ tableData.totalCount }}</i></span>
   </Dialog>
 </template>
 
 <script setup>
 import { ref, getCurrentInstance, nextTick, reactive } from "vue";
-
-import useClipboard from "vue-clipboard3";
-const { toClipboard } = useClipboard();
 
 const { proxy } = getCurrentInstance();
 
@@ -33,7 +38,7 @@ const tableData = ref({});
 const tableOptions = ref({
   extHeight: 50,
   showIndex: true,
-  tableHeight: 500
+  tableHeight: 500,
 });
 
 const colLabel = [
@@ -41,23 +46,25 @@ const colLabel = [
     prop: "avatar",
     label: "头像",
     scopedSlots: "avatar",
+    width: 100,
+    align: "center",
   },
   {
     prop: "userName",
     label: "用户名",
-    width: 150,
+    align: "center",
   },
   {
     label: "下载时间",
     prop: "downloadTime",
-    width: 150,
+    align: "center",
   },
 ];
 
 const dialogConfig = reactive({
   show: false,
   fileName: "",
-  shareId: ""
+  shareId: "",
 });
 
 const formData = ref({});
@@ -72,21 +79,20 @@ const show = (row) => {
     dialogConfig.shareId = row.shareId;
     dialogConfig.show = true;
     showCancel.value = true;
-    loadDataList()
+    loadDataList();
   });
 };
 
 const loadDataList = async () => {
-  console.log(dialogConfig)
   let params = {
     shareId: dialogConfig.shareId,
     pageNo: tableData.value.pageNo,
     pageSize: tableData.value.pageSize,
-  }
-  const res = await proxy.$api.shareDownloadInfo(params)
-  if (!res) return
-  tableData.value = res
-}
+  };
+  const res = await proxy.$api.shareDownloadInfo(params);
+  if (!res) return;
+  tableData.value = res;
+};
 
 defineExpose({ show });
 </script>

@@ -31,6 +31,7 @@ import Icon from "./components/Icon.vue";
 import FolderSeletct from "./components/FolderSeletct.vue";
 import Navigation from "./components/Navigation.vue";
 import Preview from '@/components/preview/Preview.vue'
+import MonthHot from '@/components/monthHot/index.vue'
 
 const app = createApp(App)
 
@@ -52,7 +53,7 @@ app.component("Icon", Icon);
 app.component("FolderSeletct", FolderSeletct);
 app.component("Navigation", Navigation);
 app.component("Preview", Preview);
-
+app.component("MonthHot", MonthHot);
 
 
 app.mount('#app')

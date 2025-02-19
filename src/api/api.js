@@ -24,7 +24,6 @@ export default{
     },
     getAvatar(userid, timestamp){
         return `/api/getAvatar/${userid}?${timestamp}`;
-            
     },
     updateUserAvatar(params, errorCallback) {
         return request({
