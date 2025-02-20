@@ -1,50 +1,58 @@
 import "@/assets/less/index.less";
 
-import Verify from '@/utils/Verify'
+import Verify from "@/utils/Verify";
 
-import { createApp } from 'vue'
-import { createPinia } from 'pinia'
+import { createApp } from "vue";
+import { createPinia } from "pinia";
 
-import App from './App.vue'
-import router from './router'
+import App from "./App.vue";
+import router from "./router";
 
-import HljsVuePlugin from '@highlightjs/vue-plugin'
+import HljsVuePlugin from "@highlightjs/vue-plugin";
 import "highlight.js/styles/atom-one-light.css";
-import 'highlight.js/lib/common'
+import "highlight.js/lib/common";
 
-import VueCookies from 'vue-cookies'
+import VueCookies from "vue-cookies";
 
-import api from '@/api/api.js'
+import api from "@/api/api.js";
 
-import message from '@/utils/Message'
-import Utils from '@/utils/Utils'
+import message from "@/utils/Message";
+import Utils from "@/utils/Utils";
 
 import ElementPlus from "element-plus";
-import 'element-plus/dist/index.css';
+import "element-plus/dist/index.css";
 
-import * as ElementPlusIconsVue from '@element-plus/icons-vue'
+import { bus } from "./utils/bus";
 
-import Dialog from '@/components/Dialog.vue'
-import Table from '@/components/Table.vue'
+import * as ElementPlusIconsVue from "@element-plus/icons-vue";
+
+import Dialog from "@/components/Dialog.vue";
+import Table from "@/components/Table.vue";
 import Uploader from "./views/main/Uploader.vue";
 import Icon from "./components/Icon.vue";
 import FolderSeletct from "./components/FolderSeletct.vue";
 import Navigation from "./components/Navigation.vue";
-import Preview from '@/components/preview/Preview.vue'
-import MonthHot from '@/components/monthHot/index.vue'
+import Preview from "@/components/preview/Preview.vue";
+import MonthHot from "@/components/monthHot/index.vue";
+import Card from "./components/Card.vue";
+import ButtonList from "./components/ButtonList.vue";
+import Echarts from "vue-echarts"
+import * as echarts from "echarts"
 
-const app = createApp(App)
+const app = createApp(App);
 
 app.config.globalProperties.Verify = Verify;
 app.config.globalProperties.$api = api;
 app.config.globalProperties.Message = message;
-app.config.globalProperties.VueCookies = VueCookies
+app.config.globalProperties.VueCookies = VueCookies;
 app.config.globalProperties.Utils = Utils;
+app.config.globalProperties.$bus = bus;
+app.config.globalProperties.$echarts = echarts
 
-app.use(ElementPlus)
-app.use(createPinia())
+app.use(ElementPlus);
+app.use(createPinia());
 app.use(HljsVuePlugin);
-app.use(router)
+app.use(router);
 
 app.component("Dialog", Dialog);
 app.component("Table", Table);
@@ -54,10 +62,12 @@ app.component("FolderSeletct", FolderSeletct);
 app.component("Navigation", Navigation);
 app.component("Preview", Preview);
 app.component("MonthHot", MonthHot);
+app.component("Card", Card);
+app.component("ButtonList", ButtonList);
+app.component("v-chart", Echarts);
 
-
-app.mount('#app')
+app.mount("#app");
 
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
-    app.component(key, component)
+  app.component(key, component);
 }

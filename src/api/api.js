@@ -257,5 +257,12 @@ export default{
             url: "/showShare/shareDownloadInfo",
             params,
         });
+    },
+    getFileMemoryAnalysis() {
+        return request({
+            url: "/userLoginInfo/getFileMemoryAnalysis",
+            method: 'get'
+        })
     }
+
 }

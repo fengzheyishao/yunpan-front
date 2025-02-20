@@ -73,7 +73,7 @@ service.interceptors.response.use(
 
 const request = (config)=>{
     // console.log(config);
-    const { url, params, dataType, showLoading = true, responseType = responseTypeJson } = config;
+    const { url, params, dataType, showLoading = true, responseType = responseTypeJson, method = 'post' } = config;
     let contentType = contentTypeForm;
     let formData = new FormData();
     for (let key in params) {
@@ -87,7 +87,9 @@ const request = (config)=>{
         'X-Requested-With': 'XMLHttpRequest',
     }
 
-    return service.post(url, formData, {
+    const requestMethod = method.toLowerCase() === 'get' ? service.get : service.post;
+
+    return requestMethod(url, formData, {
         onUploadProgress: (event) => {
             if (config.uploadProgressCallback) {
                 config.uploadProgressCallback(event);

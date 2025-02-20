@@ -66,10 +66,6 @@ import { useAllDateStores } from '@/stores';
 import { useRouter } from 'vue-router';
 import Utils from '@/utils/Utils';
 
-onMounted(()=>{
-    store.reloadSpacePercent();
-})
-
 const {proxy} = getCurrentInstance();
 
 const props = defineProps({
@@ -129,6 +125,11 @@ const spaceString = computed(()=>Utils.size2Str(store.state.spacePercent.useSpac
 const spacePercent = computed(()=>{
     return Math.floor(store.state.spacePercent.useSpace/store.state.spacePercent.totalSpace*10000)/100;
 });
+
+onMounted(()=>{
+    store.reloadSpacePercent();
+    proxy.$bus.$on('updateAvatar', updateAvatar)
+})
 
 // const reloadImag = ()=>{
 //     imgkey.value = false;
