@@ -46,16 +46,54 @@
               :option="fileChartOption"
               style="max-height: 500px"
             ></v-chart>
+            <div class="space-class">
+              <el-progress
+                :stroke-width="10"
+                width="100"
+                type="dashboard"
+                :color="progressColor"
+                :percentage="spacePercent"
+              >
+                <template #default="{ percentage }">
+                  <span
+                    :style="{
+                      'font-size': '20px',
+                      color: percentage > 50 ? 'red' : 'green',
+                    }"
+                    >{{ percentage }}%</span
+                  >
+                </template>
+              </el-progress>
+              <span>{{ spaceString }}</span>
+            </div>
+          </div>
+        </template>
+        <template #footer>
+          <ButtonList :btnList="chartList" flex justifyContent="end" />
+        </template>
+      </Card>
+    </div>
+    <div class="div-footer">
+      <Card minWidth="100%" maxHeight="90%" title="用户分析" img="Flag">
+        <template #default>
+          <div class="login-info">
+            <div class="table"></div>
+            <div class="month-hot">
+              <MonthHot />
+              <div>
+                <span>您好，现在是{{  }}</span>
+                <span></span>
+              </div>
+            </div>
           </div>
         </template>
       </Card>
     </div>
-    <div class="div-footer"></div>
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, getCurrentInstance } from "vue";
+import { ref, reactive, onMounted, getCurrentInstance, computed } from "vue";
 import { useAllDateStores } from "@/stores";
 
 const { proxy } = getCurrentInstance();
@@ -85,13 +123,24 @@ const userInfobtnList = [
   },
 ];
 
+const chartList = [
+  {
+    name: "申请内存",
+    show: true,
+    prop: {
+      size: "small",
+    },
+    evt: async () => {},
+  },
+];
+
 const fileMemoryInfo = ref([]);
 
 const getFileMemoryInfo = async () => {
   const res = await proxy.$api.getFileMemoryAnalysis();
   if (!res) return;
   fileMemoryInfo.value.length = 0;
-  console.log(res)
+  console.log(res);
   for (const key in res) {
     fileMemoryInfo.value.push(
       Object.assign({
@@ -103,10 +152,6 @@ const getFileMemoryInfo = async () => {
 };
 
 const fileChartOption = reactive({
-  title: {
-    text: "文件类型占用空间百分比",
-    left: "center",
-  },
   tooltip: {
     trigger: "item",
     formatter: (params) => {
@@ -136,9 +181,34 @@ const fileChartOption = reactive({
   color: ["#ff6384", "#36a2eb", "#cc65fe", "#ffce56", "#4bc0c0"],
 });
 
+const spaceString = computed(
+  () =>
+    proxy.Utils.size2Str(store.state.spacePercent.useSpace) +
+    "/" +
+    proxy.Utils.size2Str(store.state.spacePercent.totalSpace)
+);
+
+const spacePercent = computed(() => {
+  return (
+    Math.floor(
+      (store.state.spacePercent.useSpace /
+        store.state.spacePercent.totalSpace) *
+        10000
+    ) / 100
+  );
+});
+
+const showUploader = computed(() => store.state.showUploaderPlanel);
+
+const progressColor = computed(() => {
+  if (showUploader.value <= 60) return "green";
+  else if (showUploader.value <= 80) return "yellow";
+  else return "red";
+});
+
 onMounted(() => {
+  store.reloadSpacePercent();
   const userInfo = proxy.VueCookies.get("userInfo");
-  console.log(userInfo);
   Object.assign(userInfoData, userInfo);
   getFileMemoryInfo();
 });
@@ -150,12 +220,14 @@ onMounted(() => {
   box-sizing: border-box;
   flex-direction: column;
   flex: 1;
-  height: 100%;
+  min-height: 0;
   padding: 15px;
   margin: 0;
+  overflow-y: auto;
   .div-header {
     display: inline-flex;
     justify-content: space-between;
+    flex: 1;
     margin: 10px;
     .user-info {
       :deep(.el-input__inner) {
@@ -173,15 +245,42 @@ onMounted(() => {
     }
 
     .chart {
+      display: flex;
+
       max-height: 350px;
-      height: 200px;
+      height: 180px;
+
+      .space-class {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-right: 20%;
+        span {
+          font-size: 1.2em;
+          line-height: 30px;
+          align-items: center;
+        }
+      }
     }
   }
   .div-footer {
     display: flex;
     flex: 2;
-    margin: 10px;
-    width: 100%;
+    padding: 10px;
+
+    .login-info {
+      display: flex;
+      flex: 1;
+      height: 90%;
+
+      .table {
+        flex: 2;
+      }
+
+      .month-hot {
+        flex: 1;
+      }
+    }
   }
 }
 </style>

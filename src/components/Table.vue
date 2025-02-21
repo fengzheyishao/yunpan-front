@@ -31,6 +31,7 @@
                     :label="item.label"
                     :align="item.align || 'left'"
                     :width="item.width"
+                    v-bind="item.extend"
                     >
                     <template #default="scope">
                         <slot
@@ -50,6 +51,7 @@
                     :align="item.align || 'left'"
                     :width="item.width"
                     :fixed="item.fixed"
+                    v-bind="item.extend"
                     >
                 </el-table-column>
             </template>
@@ -106,7 +108,7 @@ const layout = computed(() => {
   }, prev, pager, next, jumper`;
 });
 
-const topHeight = 60 + 20 + 30 + 20;
+const topHeight = 60 + 20 + 30 + 20 + 30;
 
 const tableHeight = ref(
   props.options.tableHeight

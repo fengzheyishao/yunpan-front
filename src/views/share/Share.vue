@@ -79,18 +79,27 @@ const columns = [
   {
     label: "分享时间",
     prop: "shareTime",
+    extend: {
+      sortable: true,
+    },
     width: 180,
   },
   {
     label: "失效时间",
     prop: "expireTime",
     scopedSlots: "expireTime",
+    extend: {
+      sortable: true,
+    },
     width: 180,
   },
   {
     label: "浏览次数",
     prop: "showCount",
-    width: 100,
+    extend: {
+      sortable: true,
+    },
+    width: 120,
   },
 ];
 

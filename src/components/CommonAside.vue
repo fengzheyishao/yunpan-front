@@ -1,6 +1,6 @@
 <template>
-  <el-aside class="aside-body" width="10%">
-    <el-scrollbar>
+  <el-aside class="aside-body" width="15%">
+    <el-scrollbar >
       <el-menu :isCollapse="isCollapse" :default-active="activeMenu">
         <el-sub-menu
           v-for="item in itemBoby2"

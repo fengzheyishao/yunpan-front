@@ -7,7 +7,7 @@ export default class TimeUtils {
   static getCurrentMonth(year, month) {
     let currentDate
     if (year) {
-      currentDate = new Date(year, month + 1, 0)
+      currentDate = new Date(year, month, 0)
     } else {
       currentDate = new Date()
     }
@@ -17,11 +17,16 @@ export default class TimeUtils {
   static getCurrentDay(year, month) {
     let currentDate
     if (year) {
-      currentDate = new Date(year, month + 1, 0)
+      currentDate = new Date(year, month, 0)
     } else {
       currentDate = new Date()
     }
     return currentDate.getDay(); // 返回 0-6 的值，0 代表星期天，6 代表星期六
+  }
+
+  static getCurrentYear() {
+    const currentDate = new Date();
+    return currentDate.getFullYear();
   }
 
   static formatTime(time, fmt) {

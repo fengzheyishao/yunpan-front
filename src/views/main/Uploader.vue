@@ -12,44 +12,78 @@
               {{ item.fileName }}
             </div>
             <div class="progress">
-              <el-progress 
+              <el-progress
                 v-if="
-                item.status == STATUS.uploading.value ||
-                item.status == STATUS.upload_seconds.value ||
-                item.status == STATUS.upload_finish.value
-              "
-              :percentage="item.uploadProgress">
+                  item.status == STATUS.uploading.value ||
+                  item.status == STATUS.upload_seconds.value ||
+                  item.status == STATUS.upload_finish.value
+                "
+                :percentage="item.uploadProgress"
+              >
               </el-progress>
             </div>
           </div>
           <div class="upload-status">
-            <component class="icons" :style="{ color: STATUS[item.status].color }" :is="STATUS[item.status].icon">
+            <component
+              class="icons"
+              :style="{ color: STATUS[item.status].color }"
+              :is="STATUS[item.status].icon"
+            >
             </component>
-            <span>{{ item.status == 'fail' ? item.errorMessages : STATUS[item.status].desc }}</span>
-            <span>{{ proxy.Utils.size2Str(item.uploadSize) }}/{{ proxy.Utils.size2Str(item.totalSize) }}</span>
+            <span>{{
+              item.status == "fail"
+                ? item.errorMessages
+                : STATUS[item.status].desc
+            }}</span>
+            <span
+              >{{ proxy.Utils.size2Str(item.uploadSize) }}/{{
+                proxy.Utils.size2Str(item.totalSize)
+              }}</span
+            >
           </div>
         </div>
         <div class="op">
-          <el-progress type="circle" :width="50" :percentage="item.md5Progress"
-            v-if="item.status == STATUS.init.value" />
+          <el-progress
+            type="circle"
+            :width="50"
+            :percentage="item.md5Progress"
+            v-if="item.status == STATUS.init.value"
+          />
           <div class="op-btn" v-if="item.status === STATUS.uploading.value">
-            <el-icon v-if="item.pause" class="icon" title="上传" @click="startUpload(item.uid)">
+            <el-icon
+              v-if="item.pause"
+              class="icon"
+              title="上传"
+              @click="startUpload(item.uid)"
+            >
               <VideoPlay />
             </el-icon>
             <el-icon class="icon" title="暂停" @click="pauseUpload(item.uid)">
               <VideoPause />
             </el-icon>
-            <el-icon v-if="
+            <el-icon
+              v-if="
                 item.status != STATUS.init.value &&
                 item.status != STATUS.upload_finish.value &&
                 item.status != STATUS.upload_seconds.value
-              " class="icon" title="删除" @click="delUpload(item.uid, index)">
+              "
+              class="icon"
+              title="删除"
+              @click="delUpload(item.uid, index)"
+            >
               <CircleClose />
             </el-icon>
-            <el-icon v-if="
+          </div>
+          <div class="op-btn" v-else>
+            <el-icon
+              v-if="
                 item.status == STATUS.upload_finish.value ||
                 item.status == STATUS.upload_seconds.value
-              " class="icon" title="清除" @click="delUpload(item.uid, index)">
+              "
+              class="icon"
+              title="清除"
+              @click="delFile(item.uid, index)"
+            >
               <CloseBold />
             </el-icon>
           </div>
@@ -60,9 +94,9 @@
 </template>
 
 <script setup>
-import { computed, ref, getCurrentInstance } from 'vue';
+import { computed, ref, getCurrentInstance } from "vue";
 
-import { useAllDateStores } from '@/stores';
+import { useAllDateStores } from "@/stores";
 
 const store = useAllDateStores();
 const { proxy } = getCurrentInstance();
@@ -108,7 +142,7 @@ const STATUS = {
 
 const fileList = computed(() => {
   // console.log(store.state.fileList)
-  return store.state.fileList
+  return store.state.fileList;
 });
 
 const getFileByUid = (uid) => {
@@ -118,6 +152,26 @@ const getFileByUid = (uid) => {
   return file;
 };
 
+const delUpload = (uid) => {
+  store.state.delList.push(uid);
+};
+
+const delFile = (uid) => {
+  debugger;
+  let delIndex = -1;
+  for (let i = 0; i < store.state.fileList.length; i++) {
+    if (store.state.fileList[i].uid == uid) {
+      delIndex = i;
+      break;
+    }
+  }
+  if (delIndex != -1) {
+    store.state.fileList.splice(delIndex, 1);
+    proxy.Message.success("清除成功");
+  } else {
+    proxy.Message.error("清除失败");
+  }
+};
 </script>
 
 <style lang="less" scoped>
@@ -128,7 +182,6 @@ const getFileByUid = (uid) => {
 }
 
 .file-list {
-
   overflow: auto;
   padding: 8px 10px;
   min-height: calc(100vh / 2);

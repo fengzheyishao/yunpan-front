@@ -263,6 +263,13 @@ export default{
             url: "/userLoginInfo/getFileMemoryAnalysis",
             method: 'get'
         })
-    }
+    },
+    getUserLoginInfoByUserIdAndTime(params) {
+        return request({
+            url: "/userLoginInfo/getUserLoginInfoByUserIdAndTime",
+            params,
+            showLoading: false
+        })
+    },
 
 }

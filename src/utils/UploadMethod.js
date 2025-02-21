@@ -118,7 +118,7 @@ export default{
           break;
         }
         let start = i * chunkSize;
-        let end = start + chunkSize >= fileSize ? start + chunkSize : fileSize;
+        let end = Math.min(fileSize, start + chunkSize);
         let chunkFile = file.slice(start, end);
         let params = {
           file: chunkFile,

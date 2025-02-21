@@ -188,12 +188,18 @@ const colLabel = [
   {
     prop: "lastUpdateTime",
     label: "修改日期",
+    extend: {
+      sortable: true,
+    },
     width: 180,
   },
   {
     label: "大小",
     prop: "fileSize",
     scopedSlots: "fileSize",
+    extend: {
+      sortable: true,
+    },
     width: 180,
   },
 ];
@@ -577,7 +583,6 @@ const shareFile = (row)=>{
 }
 
 .mainShow-class{
-  height: 100vh;
   overflow: hidden;
 }
 
