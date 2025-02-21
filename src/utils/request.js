@@ -54,7 +54,7 @@ service.interceptors.response.use(
         if (code === 200) {
             return data;
         } else if (code === 901) {
-            // router.push("/login?redirectUrl=" + encodeURI(router.currentRoute.value.path));
+            router.push("/login?redirectUrl=" + encodeURI(router.currentRoute.value.path));
             return Promise.reject({ showError: false, msg: "登录超时" });
         } else {
             if (errorCallback) {

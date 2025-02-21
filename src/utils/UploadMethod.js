@@ -90,7 +90,7 @@ export default{
         fileReader.onerror = ()=>{
           resultFile.md5Progress = -1;
           resultFile.status = "fail";
-          resolve(fileItem.uid);
+          reject(fileItem.uid);
         }
       }).catch((error)=>{
         console.log(error);
