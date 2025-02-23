@@ -78,6 +78,7 @@ const getShareInfo = async ()=>{
 const router = useRouter();
 
 const formDataRef = ref();
+
 //bug
 const handleShare = ()=>{
     formDataRef.value.validate(async (valid) => {

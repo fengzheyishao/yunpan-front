@@ -271,5 +271,28 @@ export default{
             showLoading: false
         })
     },
-
+    getFileTipInfo() {
+        return request({
+            url: "/file/getFileTipInfo",
+            showLoading: false
+        })
+    },
+    resetNickname(params) {
+        return request({
+            url: "/resetNickname",
+            params
+        })
+    },
+    loadExpireShareList(params) {
+        return request({
+            url: "/share/loadExpireShareList",
+            params
+        })
+    },
+    userLoginInfoLoadDataList(params) {
+        return request({
+            url: "/userLoginInfo/loadDataList",
+            params
+        })
+    },
 }

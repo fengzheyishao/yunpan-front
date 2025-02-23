@@ -5,7 +5,7 @@
       :model="formData"
       :rules="rules"
       ref="formDataRef"
-      label-width="150px"
+      label-width="200px"
       @submit.prevent
     >
       <!--input输入-->
@@ -33,10 +33,38 @@
           <template #suffix>MB</template>
         </el-input>
       </el-form-item>
+      <el-form-item label="系统总空间大小" prop="maxMemory">
+        <el-input
+          clearable
+          placeholder="系统总空间大小"
+          v-model="formData.maxMemory"
+        >
+          <template #suffix>MB</template>
+        </el-input>
+      </el-form-item>
+      <el-form-item label="每日签到获取内存空间" prop="signIn">
+        <el-input
+          clearable
+          placeholder="每日签到获取内存空间"
+          v-model="formData.signIn"
+        >
+          <template #suffix>MB</template>
+        </el-input>
+      </el-form-item>
+      <el-form-item label="每日签到恭喜" prop="everySignInText">
+        <el-input
+          clearable
+          placeholder="每日签到恭喜"
+          v-model="formData.everySignInText"
+        >
+          <template #suffix>MB</template>
+        </el-input>
+      </el-form-item>
       <!-- 单选 -->
       <el-form-item label="" prop="">
         <el-button type="primary" @click="saveSettings">保存</el-button>
       </el-form-item>
+
     </el-form>
   </div>
 </div>
@@ -62,6 +90,23 @@ const rules = {
       validator: proxy.Verify.number,
       message: "空间大小只能是数字",
     },
+  ],
+  maxMemory: [
+    { required: true, message: "请输入系统总空间大小" },
+    {
+      validator: proxy.Verify.number,
+      message: "空间大小只能是数字",
+    },
+  ],
+  signIn: [
+    { required: true, message: "请输入每日签到获取内存空间" },
+    {
+      validator: proxy.Verify.number,
+      message: "空间大小只能是数字",
+    },
+  ],
+  everySignInText: [
+    { required: true, message: "请输入注册邮件验证码邮件内容" },
   ],
 };
 

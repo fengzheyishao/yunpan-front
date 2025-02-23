@@ -67,11 +67,7 @@ const dialogConfig = reactive({
   shareId: "",
 });
 
-const formData = ref({});
-const resultInfo = ref({});
 const showCancel = ref(true);
-const formDataRef = ref();
-const downloadRecords = ref();
 
 const show = (row) => {
   nextTick(() => {

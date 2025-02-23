@@ -4,19 +4,13 @@
       <div class="header">
         <span class="month">{{ dateData.year }}</span>
         <div style="align-items: center">
-          <el-icon
-            style="top: 2px; right: 5px; cursor: pointer"
-            @click="clickHandle(-1)"
-          >
+          <el-icon style="top: 2px; right: 5px; cursor: pointer" @click="clickHandle(-1)">
             <ArrowLeft />
           </el-icon>
           <span style="color: darkkhaki; font-size: 1.2em">{{
             dateData.month + 1
           }}</span>
-          <el-icon
-            style="top: 2px; left: 5px; cursor: pointer"
-            @click="clickHandle(1)"
-          >
+          <el-icon style="top: 2px; left: 5px; cursor: pointer" @click="clickHandle(1)">
             <ArrowRight />
           </el-icon>
         </div>
@@ -32,11 +26,9 @@
         <div :class="{ day: true, empty: true }"></div>
       </template>
       <template v-for="index in monthDay" :key="index">
-        <div
-          :class="{ day: true, 'day-point': dateData.data[index] !== 0 }"
+        <div :class="{ day: true, 'day-point': dateData.data[index] !== 0 }"
           :style="{ backgroundColor: getColor(dateData.data[index]) }"
-          :title="dateData.data[index] !== 0 ? dateData.data[index] : null"
-        >
+          :title="dateData.data[index] !== 0 ? dateData.data[index] : null">
           {{ index }}
         </div>
       </template>
@@ -45,10 +37,10 @@
 </template>
 
 <script lang="js" setup>
-import {ref, reactive, computed, onMounted, getCurrentInstance} from 'vue'
+import { ref, reactive, computed, onMounted, getCurrentInstance, nextTick } from 'vue'
 import TimeUtils from '@/utils/TimeUtils.js'
 
-const {proxy} = getCurrentInstance()
+const { proxy } = getCurrentInstance()
 
 const gradientColors = [
   'rgba(255, 255, 255, 0.8)', // 白色
@@ -107,9 +99,12 @@ const clickHandle = (x) => {
     return
   }
 
-  dateData.month = month
-  dateData.year = year
-  getDate()
+  nextTick(() => {
+    dateData.month = month
+    dateData.year = year
+    getDate()
+  })
+
 }
 
 const getDate = async () => {
@@ -146,6 +141,7 @@ onMounted(() => {
   padding: 10px 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   user-select: none;
+
   .calendar {
     display: inline-grid;
     grid-template-columns: repeat(7, minmax(0, 1fr));
@@ -189,6 +185,7 @@ onMounted(() => {
     line-height: 1.8em;
     text-align: center;
     border-bottom: 1px solid #ccc;
+
     .month {
       font-size: 1.5em;
     }
@@ -204,5 +201,4 @@ onMounted(() => {
     transform: scale(1.4);
   }
 }
-
 </style>
