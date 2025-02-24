@@ -52,9 +52,6 @@ const judge = (show) => {
   return Util.getObjType(show) === "function" ? show() : show;
 };
 
-onMounted(() => {
-  console.log(props);
-});
 </script>
 
 <style lang="less" scoped>

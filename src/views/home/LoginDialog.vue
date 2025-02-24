@@ -1,5 +1,5 @@
 <template>
-  <Dialog :show="dialogConfig.show" :title="dialogConfig.fileName" :showCancel="showCancel" width="50%"
+  <Dialog :show="dialogConfig.show" :title="dialogConfig.nickName" :showCancel="showCancel" width="50%"
     @close="dialogConfig.show = false">
     <div class="share-table">
       <Table :colLabel="colLabel" :showPagination="true" :options="tableOptions" :dataSource="tableData"
@@ -36,6 +36,9 @@ const colLabel = [
     prop: "loginCount",
     label: "登录次数",
     align: "center",
+    extend: {
+      sortable: true,
+    }
   },
 ];
 
@@ -62,6 +65,7 @@ const loadDataList = async () => {
   };
   const res = await proxy.$api.userLoginInfoLoadDataList(params);
   if (!res) return;
+  console.log(res)
   tableData.value = res;
 };
 

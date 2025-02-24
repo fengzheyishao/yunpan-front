@@ -49,6 +49,11 @@ const itemBoby = [
         icon: "Stamp",
         name: "个人信息",
         path: "/home/index",
+      },
+      {
+        icon: "Stamp",
+        name: "申请内存",
+        path: "/home/Memory",
       }
     ]
   },

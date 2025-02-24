@@ -1,9 +1,21 @@
 <template>
   <div class="div-body">
     <div class="div-header">
-      <Card style="flex: 1" shadow="always" title="个人资料" maxWidth="35%" maxHeight="100%">
+      <Card
+        style="flex: 1"
+        shadow="always"
+        title="个人资料"
+        maxWidth="35%"
+        maxHeight="100%"
+      >
         <template #default>
-          <el-form class="user-info" :model="userInfoData" ref="userInfoDataRef" label-width="140px" @submit.prevent>
+          <el-form
+            class="user-info"
+            :model="userInfoData"
+            ref="userInfoDataRef"
+            label-width="140px"
+            @submit.prevent
+          >
             <el-form-item label="昵称" prop="userInfoData.nickName">
               <el-input v-model="userInfoData.nickName" style="width: 60%" />
             </el-form-item>
@@ -19,19 +31,36 @@
           <ButtonList :btnList="userInfobtnList" flex justifyContent="end" />
         </template>
       </Card>
-      <Card style="flex: 4; margin-left: 30px" shadow="always" title="空间分析" img="TrendCharts" maxWidth="60%"
-        maxHeight="100%">
+      <Card
+        style="flex: 4; margin-left: 30px"
+        shadow="always"
+        title="空间分析"
+        img="TrendCharts"
+        maxWidth="60%"
+        maxHeight="100%"
+      >
         <template #default>
           <div class="chart">
-            <v-chart autoresize :option="fileChartOption" style="max-height: 500px"></v-chart>
+            <v-chart
+              autoresize
+              :option="fileChartOption"
+              style="max-height: 500px"
+            ></v-chart>
             <div class="space-class">
-              <el-progress :stroke-width="10" width="100" type="dashboard" :color="progressColor"
-                :percentage="spacePercent">
+              <el-progress
+                :stroke-width="10"
+                width="100"
+                type="dashboard"
+                :color="progressColor"
+                :percentage="spacePercent"
+              >
                 <template #default="{ percentage }">
-                  <span :style="{
-                    'font-size': '20px',
-                    color: percentage > 50 ? 'red' : 'green',
-                  }">{{ percentage }}%
+                  <span
+                    :style="{
+                      'font-size': '20px',
+                      color: percentage > 50 ? 'red' : 'green',
+                    }"
+                    >{{ percentage }}%
                   </span>
                 </template>
               </el-progress>
@@ -45,23 +74,39 @@
       </Card>
     </div>
     <div class="div-footer">
-      <Card minWidth="100%" maxHeight="90%" title="用户分析(仅展示距离剩余时间还有15天)" img="Flag">
+      <Card
+        minWidth="100%"
+        maxHeight="90%"
+        title="用户分析(仅展示距离剩余时间还有15天)"
+        img="Flag"
+      >
         <template #default>
           <div class="login-info">
             <div class="table">
-              <Table :showPagination="false" :colLabel="columns" :options="tableOptions" :dataSource="tableData"
-                :fetch="loadDataList">
+              <Table
+                :showPagination="false"
+                :colLabel="columns"
+                :options="tableOptions"
+                :dataSource="tableData"
+                :fetch="loadDataList"
+              >
                 <template #fileName="{ row }">
-                  <div class="table-cell" :title="row.fileName">{{ row.fileName }}</div>
+                  <div class="table-cell" :title="row.fileName">
+                    {{ row.fileName }}
+                  </div>
                 </template>
                 <template #expireTime="{ row }">
-                  <div class="table-cell" :title="row.expireTime">{{ row.expireTime }}</div>
+                  <div class="table-cell" :title="row.expireTime">
+                    {{ row.expireTime }}
+                  </div>
                 </template>
                 <template #haveTime="{ row }">
-                  <div class="table-cell">{{ formatRemainingDays(row.expireTime) }}</div>
+                  <div class="table-cell">
+                    {{ formatRemainingDays(row.expireTime) }}
+                  </div>
                 </template>
                 <template #operation="{ row }">
-                  <el-button round small>延长</el-button>
+                  <el-button round small @click="extendDialogShow(row)">延长</el-button>
                 </template>
               </Table>
             </div>
@@ -73,8 +118,13 @@
                       <template #title>
                         <div style="display: inline-flex; align-items: center">
                           {{ row.tooltip }}
-                          <el-tooltip effect="dark" :content="`今日${row.tooltip}为${tipInfoDate[row.curCount]}`"
-                            placement="top">
+                          <el-tooltip
+                            effect="dark"
+                            :content="`今日${row.tooltip}为${
+                              tipInfoDate[row.curCount]
+                            }`"
+                            placement="top"
+                          >
                             <el-icon style="margin-left: 4px" :size="12">
                               <Warning />
                             </el-icon>
@@ -85,12 +135,32 @@
                     <div class="statistic-footer">
                       <div class="footer-item">
                         <span>{{ row.footer }}</span>
-                        <span :class="getFileTipColor(row.yesterdayCount, row.curCount)">
-                          {{ getFileTipText(row.yesterdayCount, row.curCount) }}%
+                        <span
+                          :class="
+                            getFileTipColor(row.yesterdayCount, row.curCount)
+                          "
+                        >
+                          {{
+                            getFileTipText(row.yesterdayCount, row.curCount)
+                          }}%
                           <el-icon>
-                            <Line v-if="getFileTipColor(row.yesterdayCount, row.curCount).length===0"/>
-                            <CaretTop v-else-if="getFileTipColor(row.yesterdayCount, row.curCount)[0] === 'green'"/>
-                            <CaretBottom v-else/>
+                            <Line
+                              v-if="
+                                getFileTipColor(
+                                  row.yesterdayCount,
+                                  row.curCount
+                                ).length === 0
+                              "
+                            />
+                            <CaretTop
+                              v-else-if="
+                                getFileTipColor(
+                                  row.yesterdayCount,
+                                  row.curCount
+                                )[0] === 'green'
+                              "
+                            />
+                            <CaretBottom v-else />
                           </el-icon>
                         </span>
                       </div>
@@ -102,24 +172,47 @@
             <div class="month-hot">
               <MonthHot />
               <div class="date-info">
-                <span>您好，现在是<i style="color:dimgray">{{ curDateTime }}</i></span>
-                <span style="margin-left: 20px;"><el-button round>查看详细记录</el-button></span>
+                <span
+                  >您好，现在是<i style="color: dimgray">{{
+                    curDateTime
+                  }}</i></span
+                >
+                <span style="margin-left: 20px">
+                  <el-button round @click="loginDialogShow">查看详细记录</el-button>
+                </span>
               </div>
             </div>
           </div>
         </template>
       </Card>
     </div>
+    <ExtendShareDiglog ref="extendShareDiglogRef" />
+    <LoginDialog ref="loginDialogRef" />
+    <ApplyMemoryDialog ref="applyMemoryDialogRef" />
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, getCurrentInstance, computed, onBeforeUnmount } from "vue";
+import {
+  ref,
+  reactive,
+  onMounted,
+  getCurrentInstance,
+  computed,
+  onBeforeUnmount,
+} from "vue";
 import { useAllDateStores } from "@/stores";
 import TimeUtils from "@/utils/TimeUtils";
+import ExtendShareDiglog from "./ExtendShareDiglog.vue";
+import LoginDialog from "./LoginDialog.vue";
+import ApplyMemoryDialog from "./ApplyMemoryDialog.vue";
 
 const { proxy } = getCurrentInstance();
 const store = useAllDateStores();
+
+const extendShareDiglogRef = ref();
+const loginDialogRef = ref();
+const applyMemoryDialogRef = ref();
 
 const userInfoDataRef = ref();
 const userInfoData = reactive({});
@@ -131,16 +224,13 @@ const userInfobtnList = [
     prop: {
       size: "small",
     },
-    evt: async () => { 
+    evt: async () => {
       let params = {
-        nickname: userInfoData.nickName.trim()
-      }
-      const res = await proxy.$api.resetNickname(params)
-      if (!res) {
-        
-        return
-      }
-      
+        nickname: userInfoData.nickName.trim(),
+      };
+      const res = await proxy.$api.resetNickname(params);
+      if (!res) return;
+      proxy.Message.success("修改成功");
     },
   },
   {
@@ -156,13 +246,17 @@ const userInfobtnList = [
 ];
 
 const chartList = [
-{
+  {
     name: "签到",
     show: true,
     prop: {
       size: "small",
     },
-    evt: async () => { },
+    evt: async () => {
+      const res = await proxy.$api.everyDaySignIn();
+      if (!res) return;
+      proxy.Message.success("签到成功");
+    },
   },
   {
     name: "申请内存",
@@ -170,47 +264,48 @@ const chartList = [
     prop: {
       size: "small",
     },
-    evt: async () => { },
+    evt: async () => {
+      applyMemoryDialogRef.value.show()
+    },
   },
 ];
 
 const tableData = ref({});
 
-const tipInfoDate = reactive({})
+const tipInfoDate = reactive({});
 
 const tipArray = [
   {
-    tooltip: '下载次数',
-    prop: 'downLoadCount',
-    allCount: 'allDownLoadCount',
-    yesterdayCount: 'downLoadYesCount',
-    curCount: 'downLoadCurCount',
-    footer: 'than yesterday'
+    tooltip: "下载次数",
+    prop: "downLoadCount",
+    allCount: "allDownLoadCount",
+    yesterdayCount: "downLoadYesCount",
+    curCount: "downLoadCurCount",
+    footer: "than yesterday",
   },
   {
-    tooltip: '浏览次数',
-    prop: 'showCount',
-    allCount: 'allshowCount',
-    yesterdayCount: 'showCountYesCount',
-    curCount: 'showCountCurCount',
-    footer: 'than yesterday'
+    tooltip: "浏览次数",
+    prop: "showCount",
+    allCount: "allshowCount",
+    yesterdayCount: "showCountYesCount",
+    curCount: "showCountCurCount",
+    footer: "than yesterday",
   },
   {
-    tooltip: '文件数量',
-    prop: 'fileCount',
-    allCount: 'allFileCount',
-    yesterdayCount: 'fileYesCount',
-    curCount: 'fileCurCount',
-    footer: 'than yesterday'
+    tooltip: "文件数量",
+    prop: "fileCount",
+    allCount: "allFileCount",
+    yesterdayCount: "fileYesCount",
+    curCount: "fileCurCount",
+    footer: "than yesterday",
   },
-]
+];
 
 const columns = [
   {
     label: "文件名",
     prop: "fileName",
     scopedSlots: "fileName",
-    width: 150,
   },
   {
     label: "浏览次数",
@@ -229,35 +324,33 @@ const columns = [
   {
     label: "剩余时间",
     scopedSlots: "haveTime",
-    extend: {
-      sortable: true,
-    },
+    width: 100,
   },
   {
     label: "操作",
     scopedSlots: "operation",
     extend: {
-      fixed: 'right'
+      fixed: "right",
     },
-    width: 80,
-  }
-]
+    width: 100,
+  },
+];
 
 const getFileTipColor = (yesterday, today) => {
-  const yesData = tipInfoDate[yesterday]
-  const curData = tipInfoDate[today]
-  if (!curData || curData == 0) return []
-  if (curData >= yesData) return ['green']
-  return ['red']
-}
+  const yesData = tipInfoDate[yesterday];
+  const curData = tipInfoDate[today];
+  if (!curData || curData == 0) return [];
+  if (curData >= yesData) return ["green"];
+  return ["red"];
+};
 
 const getFileTipText = (yesterday, today) => {
-  const yesData = tipInfoDate[yesterday]
-  const curData = tipInfoDate[today]
-  if (!curData || curData == 0) return 0
-  if (curData > yesData) return (yesData/curData*100).toFixed(2)
-  return (curData/yesData*100).toFixed(2)
-}
+  const yesData = tipInfoDate[yesterday];
+  const curData = tipInfoDate[today];
+  if (!curData || curData == 0) return 0;
+  if (curData > yesData) return ((yesData / curData) * 100).toFixed(2);
+  return ((curData / yesData) * 100).toFixed(2);
+};
 
 const fileMemoryInfo = ref([]);
 
@@ -277,9 +370,9 @@ const getFileMemoryInfo = async () => {
 
 const getFileTipDate = async () => {
   const res = await proxy.$api.getFileTipInfo();
-  if (!res) return
-  Object.assign(tipInfoDate, res)
-}
+  if (!res) return;
+  Object.assign(tipInfoDate, res);
+};
 
 const fileChartOption = reactive({
   tooltip: {
@@ -323,7 +416,7 @@ const spacePercent = computed(() => {
     Math.floor(
       (store.state.spacePercent.useSpace /
         store.state.spacePercent.totalSpace) *
-      10000
+        10000
     ) / 100
   );
 });
@@ -340,17 +433,28 @@ const progressColor = computed(() => {
 });
 
 const tableOptions = ref({
-  tableHeight: 330,
+  tableHeight: 380,
   extHeight: 10,
-  selectType: "checkbox",
 });
 
+const extendDialogShow = (row) => {
+  extendShareDiglogRef.value.show(row)
+}
+
+const loginDialogShow = () => {
+  const userInfo = proxy.VueCookies.get("userInfo");
+  const row = {
+    nickName: userInfo.nickName
+  }
+  loginDialogRef.value.show(row)
+}
+
 const loadDataList = async () => {
-  const date = new Date()
+  const date = new Date();
   date.setDate(date.getDate() + 15);
   let parmas = {
-    expireTimeEnd: TimeUtils.formatTime(date, 'yyyy-MM-dd HH:mm:ss')
-  }
+    expireTimeEnd: TimeUtils.formatTime(date, "yyyy-MM-dd HH:mm:ss"),
+  };
   let res = await proxy.$api.loadExpireShareList(parmas);
   if (!res) {
     return;
@@ -360,11 +464,10 @@ const loadDataList = async () => {
 
 const formatRemainingDays = (expireTime) => {
   const currentTime = new Date();
-  const dateTime = expireTime.split(' ')
-  dateTime[1] = dateTime[1].replace(/-/g, ':')
-  const expireDate = new Date(dateTime.join('T'))
+  const dateTime = expireTime.split(" ");
+  dateTime[1] = dateTime[1].replace(/-/g, ":");
+  const expireDate = new Date(dateTime.join("T"));
   const timeDiff = expireDate - currentTime; // 计算时间差（毫秒）
-  console.log(expireDate, timeDiff)
 
   const daysRemaining = Math.ceil(timeDiff / (1000 * 60 * 60 * 24)); // 转换为天数并向上取整
   return daysRemaining < 1 ? "小于1天" : `${daysRemaining}天`;
@@ -375,7 +478,7 @@ onMounted(async () => {
   const userInfo = proxy.VueCookies.get("userInfo");
   Object.assign(userInfoData, userInfo);
   await getFileMemoryInfo();
-  await getFileTipDate()
+  await getFileTipDate();
 
   timer = setInterval(() => {
     curDateTime.value = new Date().toLocaleString();
@@ -385,7 +488,6 @@ onMounted(async () => {
 onBeforeUnmount(() => {
   clearInterval(timer);
 });
-
 </script>
 
 <style lang="less" scoped>
@@ -456,8 +558,6 @@ onBeforeUnmount(() => {
 
       .table {
         flex: 7;
-
-
       }
 
       .card {
@@ -476,8 +576,6 @@ onBeforeUnmount(() => {
           }
         }
       }
-
-
     }
   }
 }

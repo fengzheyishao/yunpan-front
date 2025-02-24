@@ -17,8 +17,9 @@
         ></el-input>
       </el-form-item>
       <!--textarea输入-->
-      <el-form-item label="注册邮件标题" prop="registerEmailContent">
+      <el-form-item label="注册邮件内容" prop="registerEmailContent">
         <el-input
+          type="textarea"
           clearable
           placeholder="请输入注册邮件验证码邮件内容%s占位符为验证码内容"
           v-model="formData.registerEmailContent"
@@ -47,15 +48,6 @@
           clearable
           placeholder="每日签到获取内存空间"
           v-model="formData.signIn"
-        >
-          <template #suffix>MB</template>
-        </el-input>
-      </el-form-item>
-      <el-form-item label="每日签到恭喜" prop="everySignInText">
-        <el-input
-          clearable
-          placeholder="每日签到恭喜"
-          v-model="formData.everySignInText"
         >
           <template #suffix>MB</template>
         </el-input>

@@ -27,6 +27,15 @@ const router = createRouter({
           component: () => import("@/views/home/index.vue")
         },
         {
+          path: '/home/Memory',
+          name: '申请内存',
+          meta: {
+            needLogin: true,
+            menuCode: "memory"
+          },
+          component: () => import("@/views/home/Memory.vue")
+        },
+        {
           path: '/main/:category',
           name: '文件',
           meta: {

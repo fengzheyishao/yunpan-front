@@ -34,8 +34,8 @@ import FolderSeletct from "./components/FolderSeletct.vue";
 import Navigation from "./components/Navigation.vue";
 import Preview from "@/components/preview/Preview.vue";
 import MonthHot from "@/components/monthHot/index.vue";
-import Card from "./components/Card.vue";
-import ButtonList from "./components/ButtonList.vue";
+import Card from "@/components/Card.vue";
+import ButtonList from "@/components/ButtonList.vue";
 import Echarts from "vue-echarts"
 import * as echarts from "echarts"
 
