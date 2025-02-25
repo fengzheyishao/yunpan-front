@@ -5,7 +5,7 @@
     <!-- 表格头部按钮 -->
     <slot name="tableHeader" :multipleSelection="selectedTable" />
     <!-- 表格主体 -->
-    <div class="flex-column-1 p-relative">
+    <div class="flex-column p-relative">
       <el-table
         ref="tableRef"
         class="flex-column-1 p-absolute"
@@ -63,7 +63,7 @@
       v-if="pagination"
       v-model:current-page="currentPage"
       v-model:page-size="pageSize"
-      class="pb10"
+      style="padding-bottom: 10px;"
       :page-sizes="[15, 20, 30, 40, 50]"
       layout="->,total, sizes, prev, pager, next, jumper"
       :total="total"
@@ -75,6 +75,7 @@
 
 <script setup>
 import {ref, reactive, onBeforeMount, toRefs, provide} from 'vue'
+import Tooltip from './Tooltip.vue'
 import SearchForm from './SearchForm.vue'
 
 const props = defineProps({
@@ -95,7 +96,7 @@ const props = defineProps({
     default: () => {}
   }, // 请求表格数据的api
   resetForm: {
-    type: Array,
+    type: Function,
     default: () => {}
   }, // 重置按钮事件
   dataList: {
@@ -103,8 +104,8 @@ const props = defineProps({
     default: () => []
   }, // 支持传递 table 数据
   pagination: {
-    type: Array,
-    default: () => true
+    type: Boolean,
+    default: true
   }, // 是否显示分页
 })
 
@@ -112,7 +113,7 @@ const state = reactive({
   searchList: [],
   tableData: [],
   currentPage: 1,
-  pageSize: 10,
+  pageSize: 15,
   total: 0,
   loading: false
 })
@@ -256,5 +257,11 @@ onBeforeMount(() => {
 
 .p-absolute {
   position: absolute;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+  height: 70%;
 }
 </style>

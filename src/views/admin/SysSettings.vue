@@ -1,69 +1,68 @@
 <template>
-    <div class="sys-body">
+  <div class="sys-body">
     <div class="sys-setting-panel">
-    <el-form
-      :model="formData"
-      :rules="rules"
-      ref="formDataRef"
-      label-width="200px"
-      @submit.prevent
-    >
-      <!--input输入-->
-      <el-form-item label="注册邮件标题" prop="registerEmailTitle">
-        <el-input
-          clearable
-          placeholder="请输入注册邮件验证码邮件标题"
-          v-model="formData.registerEmailTitle"
-        ></el-input>
-      </el-form-item>
-      <!--textarea输入-->
-      <el-form-item label="注册邮件内容" prop="registerEmailContent">
-        <el-input
-          type="textarea"
-          clearable
-          placeholder="请输入注册邮件验证码邮件内容%s占位符为验证码内容"
-          v-model="formData.registerEmailContent"
-        ></el-input>
-      </el-form-item>
-      <el-form-item label="初始空间大小" prop="userInitUseSpace">
-        <el-input
-          clearable
-          placeholder="初始空间大小"
-          v-model="formData.userInitUseSpace"
-        >
-          <template #suffix>MB</template>
-        </el-input>
-      </el-form-item>
-      <el-form-item label="系统总空间大小" prop="maxMemory">
-        <el-input
-          clearable
-          placeholder="系统总空间大小"
-          v-model="formData.maxMemory"
-        >
-          <template #suffix>MB</template>
-        </el-input>
-      </el-form-item>
-      <el-form-item label="每日签到获取内存空间" prop="signIn">
-        <el-input
-          clearable
-          placeholder="每日签到获取内存空间"
-          v-model="formData.signIn"
-        >
-          <template #suffix>MB</template>
-        </el-input>
-      </el-form-item>
-      <!-- 单选 -->
-      <el-form-item label="" prop="">
-        <el-button type="primary" @click="saveSettings">保存</el-button>
-      </el-form-item>
-
-    </el-form>
+      <el-form
+        :model="formData"
+        :rules="rules"
+        ref="formDataRef"
+        label-width="200px"
+        @submit.prevent
+      >
+        <!--input输入-->
+        <el-form-item label="注册邮件标题" prop="registerEmailTitle">
+          <el-input
+            clearable
+            placeholder="请输入注册邮件验证码邮件标题"
+            v-model="formData.registerEmailTitle"
+          ></el-input>
+        </el-form-item>
+        <!--textarea输入-->
+        <el-form-item label="注册邮件内容" prop="registerEmailContent">
+          <el-input
+            type="textarea"
+            clearable
+            placeholder="请输入注册邮件验证码邮件内容%s占位符为验证码内容"
+            v-model="formData.registerEmailContent"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="初始空间大小" prop="userInitUseSpace">
+          <el-input
+            clearable
+            placeholder="初始空间大小"
+            v-model="formData.userInitUseSpace"
+          >
+            <template #suffix>MB</template>
+          </el-input>
+        </el-form-item>
+        <el-form-item label="系统总空间大小" prop="maxMemory">
+          <el-input
+            clearable
+            placeholder="系统总空间大小"
+            v-model="formData.maxMemory"
+          >
+            <template #suffix>MB</template>
+          </el-input>
+        </el-form-item>
+        <el-form-item label="每日签到获取内存空间" prop="signIn">
+          <el-input
+            clearable
+            placeholder="每日签到获取内存空间"
+            v-model="formData.signIn"
+          >
+            <template #suffix>MB</template>
+          </el-input>
+        </el-form-item>
+        <!-- 单选 -->
+        <el-form-item label="" prop="">
+          <el-button type="primary" @click="saveSettings">保存</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
   </div>
-</div>
 </template>
 
 <script setup>
-import { ref, getCurrentInstance, onMounted } from 'vue';
+import { ref, getCurrentInstance, onMounted } from "vue";
 
 const { proxy } = getCurrentInstance();
 const formDataRef = ref();
@@ -102,32 +101,31 @@ const rules = {
   ],
 };
 
-onMounted(()=>{
-    getSysSettings();
-})
+onMounted(() => {
+  getSysSettings();
+});
 
 const getSysSettings = async () => {
   let res = await proxy.$api.getSysSettings();
   if (!res) return;
   formData.value = res;
-}
+};
 
-const saveSettings = ()=>{
-    formDataRef.value.validate(async (valid) => {
-        if (!valid) return;
-        let params = Object.assign({}, formData.value);
-        let res = await proxy.$api.saveSysSettings(params);
-        proxy.Message.success("保存成功");
-    });
-}
-
+const saveSettings = () => {
+  formDataRef.value.validate(async (valid) => {
+    if (!valid) return;
+    let params = Object.assign({}, formData.value);
+    let res = await proxy.$api.saveSysSettings(params);
+    proxy.Message.success("保存成功");
+  });
+};
 </script>
 
 <style lang="less" scoped>
-.sys-body{
-    width: 100%;
-    height: 100%;
-    padding: 30px;
+.sys-body {
+  width: 100%;
+  height: 100%;
+  padding: 30px;
 }
 .sys-setting-panel {
   margin-top: 20px;

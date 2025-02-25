@@ -1,6 +1,6 @@
 <template>
   <el-aside class="aside-body" width="15%">
-    <el-scrollbar >
+    <el-scrollbar>
       <el-menu :isCollapse="isCollapse" :default-active="activeMenu">
         <el-sub-menu
           v-for="item in itemBoby2"
@@ -54,8 +54,8 @@ const itemBoby = [
         icon: "Stamp",
         name: "申请内存",
         path: "/home/Memory",
-      }
-    ]
+      },
+    ],
   },
   {
     icon: "Tickets",
@@ -147,6 +147,11 @@ const itemBoby = [
         icon: "Setting",
         name: "用户管理",
         path: "/settings/userList",
+      },
+      {
+        icon: "Setting",
+        path: "/settings/AdminMemoryApply",
+        name: "空间申请",
       },
       {
         icon: "Setting",

@@ -295,27 +295,39 @@ export default {
       params,
     });
   },
+  addUserMemoryApply(params) {
+    return request({
+      url: "/userMemoryRequest/addUserMemoryApply",
+      params,
+    });
+  },
+  userMemoryRequestLoadDataList(params) {
+    return request({
+      url: "/userMemoryRequest/loadDataList",
+      params,
+    });
+  },
   everyDaySignIn() {
     return request({
       url: "/everyDaySignIn",
     });
   },
-  extendShareTime(parmas) {
+  extendShareTime(params) {
     return request({
       url: "/share/extendShareTime",
-      parmas,
+      params,
     });
   },
-  userMemoryRequestLoadDataList(parmas) {
+  updateUserMemoryRequestById(params) {
     return request({
-      url: "/userMemoryRequest/loadDataList",
-      parmas,
+      url: "/userMemoryRequest/updateUserMemoryRequestById",
+      params,
     });
   },
-  addUserMemoryApply(parmas) {
+  getAdminMemoryApplyList(params) {
     return request({
-      url: "/userMemoryRequest/addUserMemoryApply",
-      parmas,
+      url: "/admin/getMemoryApplyList",
+      params,
     });
   },
 };

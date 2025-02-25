@@ -89,6 +89,15 @@ const router = createRouter({
           },
           component: () => import("@/views/admin/FileList.vue")
         },
+        {
+          path: '/settings/AdminMemoryApply',
+          name: '用户空间申请',
+          meta: {
+            needLogin: true,
+            menuCode: "settings"
+          },
+          component: () => import("@/views/admin/AdminMemoryApply.vue")
+        },
       ]
     },
     {

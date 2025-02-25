@@ -186,7 +186,7 @@
         </template>
       </Card>
     </div>
-    <ExtendShareDiglog ref="extendShareDiglogRef" />
+    <ExtendShareDiglog ref="extendShareDiglogRef" @callback="loadDataList"/>
     <LoginDialog ref="loginDialogRef" />
     <ApplyMemoryDialog ref="applyMemoryDialogRef" />
   </div>

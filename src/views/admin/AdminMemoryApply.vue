@@ -1,6 +1,6 @@
 <template>
   <div class="flex-row-1">
-    <BasicContainer :block="true" headerTitle="申请内存" :padding="10">
+    <BasicContainer :block="true" headerTitle="空间申请" :padding="10">
       <List
         ref="memoryListRef"
         :titleSearch="listPageData.titleSearch"
@@ -11,8 +11,8 @@
         @row-dblclick="dbClick"
         @selection-change="selectionChange"
       >
-        <template #operation="{row, index}">
-          <el-button size="small" @click="applyMemoryDialogRef.show('second', row, refreshList)">重新申请</el-button>
+        <template #operation="{ row, index }">
+          <el-button size="small">审批</el-button>
         </template>
         <template #tableHeader>
           <div class="mt10">
@@ -21,13 +21,11 @@
         </template>
       </List>
     </BasicContainer>
-    <ApplyMemoryDialog ref="applyMemoryDialogRef" />
   </div>
 </template>
 
 <script setup>
 import BasicContainer from "@/components/BasicContainer/BasicContainer.vue";
-import ApplyMemoryDialog from "./ApplyMemoryDialog.vue";
 import List from "@/components/ListPage/List.vue";
 import { reactive, ref, getCurrentInstance } from "vue";
 
@@ -36,21 +34,8 @@ const tableSelected = ref([]);
 const searchParams = ref({});
 
 const memoryListRef = ref();
-const applyMemoryDialogRef = ref();
+const buttonList = [];
 
-const buttonList = [
-  {
-    type: "primary",
-    name: "申请内存",
-    show: true,
-    plain: false,
-    evt: ({ name }) => {
-      applyMemoryDialogRef.value.show('first')
-    },
-  },
-];
-
-// 状态选项
 const statusOption = [
   { label: "待批准", value: 0 },
   { label: "已批准", value: 1 },
@@ -60,21 +45,17 @@ const statusOption = [
 const listPageData = reactive({
   titleSearch: [
     {
-      type: "date-picker",
-      prop: "requestTime",
+      type: "input",
+      prop: "nickNameFuzzy",
       props: {
-        type: "daterange",
-        rangeSeparator: "至",
-        startPlaceholder: "开始日期",
-        endPlaceholder: "结束日期",
-        valueFormat: "YYYY-MM-DD",
+        placeholder: "请输入用户名称",
       },
     },
     {
       type: "select",
       prop: "status",
       props: {
-        placeholder: "请选择",
+        placeholder: "请选择申请状态",
         options: statusOption,
       },
     },
@@ -82,12 +63,32 @@ const listPageData = reactive({
   listHeadData: [
     { prop: "selection", fixed: "left", width: "55" },
     {
+      prop: "nickName",
+      label: "用户名称",
+    },
+    {
       prop: "requestTime",
       label: "申请时间",
+      search: {
+        type: "date-picker",
+        props: {
+          type: "daterange",
+          rangeSeparator: "至",
+          startPlaceholder: "开始日期",
+          endPlaceholder: "结束日期",
+          valueFormat: "YYYY-MM-DD",
+        },
+      },
     },
     {
       prop: "requestSize",
       label: "申请内存大小",
+      search: {
+        type: "input",
+        props: {
+          placeholder: "请输入大于内存",
+        },
+      },
     },
     {
       prop: "rejectionReason",
@@ -95,6 +96,16 @@ const listPageData = reactive({
       formatter: (val) => {
         if (!val) return "尚未审批";
         return val;
+      },
+      search: {
+        type: "date-picker",
+        props: {
+          type: "daterange",
+          rangeSeparator: "至",
+          startPlaceholder: "开始日期",
+          endPlaceholder: "结束日期",
+          valueFormat: "YYYY-MM-DD",
+        },
       },
     },
     {
@@ -124,7 +135,7 @@ const listPageData = reactive({
     },
     {
       prop: "operation",
-      fixed: 'right',
+      fixed: "right",
       label: "操作",
     },
   ],
@@ -132,7 +143,7 @@ const listPageData = reactive({
 });
 
 const requestListData = (params) => {
-  const { requestTime, ...data } = params;
+  const { requestTime, rejectionReason, ...data } = params;
   const query = {
     ...data,
   };
@@ -142,9 +153,19 @@ const requestListData = (params) => {
       requestTimeEnd: requestTime ? `${requestTime[1]} 23:59:59` : "",
     });
   }
+  if (rejectionReason) {
+    Object.assign(query, {
+      rejectionReasonStart: rejectionReason
+        ? `${rejectionReason[0]} 00:00:00`
+        : "",
+      rejectionReasonEnd: rejectionReason
+        ? `${rejectionReason[1]} 23:59:59`
+        : "",
+    });
+  }
   searchParams.value = query;
   return proxy.$api
-    .userMemoryRequestLoadDataList(query)
+    .getAdminMemoryApplyList(query)
     .then((res) => {
       searchParams.value.total = res.totalCount;
       console.log(res);
@@ -159,9 +180,7 @@ const requestListData = (params) => {
     });
 };
 
-const dbClick = (row) => {
-  applyMemoryDialogRef.value.show('read', row, refreshList)
-};
+const dbClick = (row) => {};
 
 const selectionChange = (val) => {
   tableSelected.value = val;
