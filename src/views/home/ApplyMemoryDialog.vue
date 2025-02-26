@@ -66,6 +66,7 @@
             clearable
             placeholder="请输入备注"
             v-model="formData.notes"
+            :autosize="{ minRows: 4}"
           />
         </el-form-item>
         <template v-if="dialogConfig.type !== 'first'">
@@ -107,10 +108,7 @@ import { ref, getCurrentInstance, nextTick, reactive } from "vue";
 const { proxy } = getCurrentInstance();
 
 const formDataRef = ref();
-const formData = reactive({
-  requestSize: '', 
-  notes: ''
-});
+const formData = reactive({});
 const switchValue = ref("1");
 
 const options = [

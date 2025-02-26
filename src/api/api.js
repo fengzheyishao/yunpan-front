@@ -330,4 +330,19 @@ export default {
       params,
     });
   },
+  adminUpdateUserMemory(params) {
+    return request({
+      url: "/admin/updateUserMemory",
+      params,
+      dataType: 'json'
+    });
+  },
+  updateQueryAllUserMemory(params) {
+    return request({
+      url: "/admin/updateQueryAllUserMemory",
+      params,
+      dataType: 'json'
+    });
+  },
+  
 };

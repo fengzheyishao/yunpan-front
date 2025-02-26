@@ -12,7 +12,12 @@
         @selection-change="selectionChange"
       >
         <template #operation="{ row, index }">
-          <el-button size="small">审批</el-button>
+          <el-button
+            v-if="row.status === 0"
+            size="small"
+            @click="sysMemoryDialogRef.show(row, 'edit', refreshList)"
+            >审批</el-button
+          >
         </template>
         <template #tableHeader>
           <div class="mt10">
@@ -21,11 +26,13 @@
         </template>
       </List>
     </BasicContainer>
+    <SysMemoryDialog ref="sysMemoryDialogRef" />
   </div>
 </template>
 
 <script setup>
 import BasicContainer from "@/components/BasicContainer/BasicContainer.vue";
+import SysMemoryDialog from "./SysMemoryDialog.vue";
 import List from "@/components/ListPage/List.vue";
 import { reactive, ref, getCurrentInstance } from "vue";
 
@@ -34,7 +41,35 @@ const tableSelected = ref([]);
 const searchParams = ref({});
 
 const memoryListRef = ref();
-const buttonList = [];
+const sysMemoryDialogRef = ref();
+const buttonList = [
+  {
+    name: "批量审批",
+    show: true,
+    plain: false,
+    evt: ({ name }) => {
+      if (tableSelected.value < 1) {
+        proxy.Message.warning('请选择要审核的目标')
+        return
+      }
+      const index = tableSelected.value.findIndex((item) => item.status !== 0)
+      if (index === -1) {
+        proxy.Message.warning('有已审核目标')
+        return
+      }
+      sysMemoryDialogRef.value.show({id: getSelectedDataId(), status: 0}, 'edit2', refreshList)
+    },
+  },
+  {
+    name: "按查询条件批量审批",
+    show: true,
+    plain: false,
+    evt: ({ name }) => {
+      proxy.Message.warning('请选择要审核的内容')
+      sysMemoryDialogRef.value.show({id: getSelectedDataId(), status: 0, query: searchParams.value}, 'edit3', refreshList)
+    },
+  },
+];
 
 const statusOption = [
   { label: "待批准", value: 0 },
@@ -83,6 +118,9 @@ const listPageData = reactive({
     {
       prop: "requestSize",
       label: "申请内存大小",
+      formatter: (val) => {
+        return proxy.Utils.size2Str(val*1024*1024);
+      },
       search: {
         type: "input",
         props: {
@@ -91,7 +129,7 @@ const listPageData = reactive({
       },
     },
     {
-      prop: "rejectionReason",
+      prop: "requestTime",
       label: "审批时间",
       formatter: (val) => {
         if (!val) return "尚未审批";
@@ -119,7 +157,7 @@ const listPageData = reactive({
           case 1:
             return "已批准";
           default:
-            "已拒绝";
+            return "已拒绝";
         }
       },
       tagType: (value) => {
@@ -168,7 +206,6 @@ const requestListData = (params) => {
     .getAdminMemoryApplyList(query)
     .then((res) => {
       searchParams.value.total = res.totalCount;
-      console.log(res);
       return {
         listData: res.list,
         pageSize: res.pageSize,
@@ -180,7 +217,9 @@ const requestListData = (params) => {
     });
 };
 
-const dbClick = (row) => {};
+const dbClick = (row) => {
+  sysMemoryDialogRef.value.show(row, "read", refreshList);
+};
 
 const selectionChange = (val) => {
   tableSelected.value = val;
@@ -189,6 +228,10 @@ const selectionChange = (val) => {
 const refreshList = () => {
   memoryListRef.value.searchClick();
 };
+
+const getSelectedDataId = () => {
+  return tableSelected.value.map((i) => i.id)
+}
 </script>
 
 <style lang="less" scoped>

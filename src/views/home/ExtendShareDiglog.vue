@@ -9,13 +9,20 @@
     <div class="shareFile-body">
       <el-form
         :model="formData"
-        :rules="rules"
         label-width="100px"
-        @submit.prevent
         ref="formDataRef"
       >
         <el-form-item label="文件"> {{ formData.fileName }} </el-form-item>
-        <el-form-item label="有效期" prop="validType">
+        <el-form-item
+          label="有效期"
+          prop="validType"
+          :rules="[
+            {
+              required: true,
+              message: '请选择有效期',
+            },
+          ]"
+        >
           <el-radio-group v-model="formData.validType">
             <el-radio value="0">1天</el-radio>
             <el-radio value="1">7天</el-radio>
@@ -37,45 +44,47 @@ import { ref, getCurrentInstance, nextTick, reactive } from "vue";
 const { proxy } = getCurrentInstance();
 
 const rules = {
-  validType: [{ required: true, message: "请选择有效期", trigger: 'change' }],
+  validType: [{ required: true, message: "请选择有效期", trigger: "change" }],
 };
 
 const dialogConfig = ref({
   show: false,
   title: "延长分享时间",
-  shareId: '',
+  shareId: "",
   buttons: [
     {
       type: "primary",
       text: "确定",
       click: async (row) => {
-        const { validType } = formData;
-        let parmas = {
-          shareId: dialogConfig.value.shareId,
-          validType,
-        };
-        const res = await proxy.$api.extendShareTime(parmas);
-        if (!res) return
-        proxy.Message.success("延长成功")
-        emit('callback')
-        dialogConfig.value.show = false
+        formDataRef.value.validate(async (valid) => {
+          if (!valid) return;
+          const { validType } = formData;
+          let parmas = {
+            shareId: dialogConfig.value.shareId,
+            validType,
+          };
+          const res = await proxy.$api.extendShareTime(parmas);
+          if (!res) return;
+          proxy.Message.success("延长成功");
+          emit("callback");
+          dialogConfig.value.show = false;
+        });
       },
     },
   ],
 });
 
-const formData = reactive({validType: 1});
+const formData = reactive({});
 const showCancel = ref(true);
 const formDataRef = ref();
 
 const show = (data) => {
   dialogConfig.value.show = true;
   dialogConfig.value.shareId = data.shareId;
+  formData.fileName = data.fileName;
   showCancel.value = true;
   nextTick(() => {
     formDataRef.value.resetFields();
-    formData.value = Object.assign({}, data);
-    dialogConfig.value.buttons[0].text = "确定";
   });
 };
 

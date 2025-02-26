@@ -262,6 +262,6 @@ onBeforeMount(() => {
 .flex-column {
   display: flex;
   flex-direction: column;
-  height: 70%;
+  height: 77%;
 }
 </style>

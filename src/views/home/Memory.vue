@@ -88,6 +88,9 @@ const listPageData = reactive({
     {
       prop: "requestSize",
       label: "申请内存大小",
+      formatter: (val) => {
+        return proxy.Utils.size2Str(val*1024*1024)
+      }
     },
     {
       prop: "rejectionReason",
@@ -108,7 +111,7 @@ const listPageData = reactive({
           case 1:
             return "已批准";
           default:
-            "已拒绝";
+            return "已拒绝";
         }
       },
       tagType: (value) => {
@@ -147,7 +150,6 @@ const requestListData = (params) => {
     .userMemoryRequestLoadDataList(query)
     .then((res) => {
       searchParams.value.total = res.totalCount;
-      console.log(res);
       return {
         listData: res.list,
         pageSize: res.pageSize,

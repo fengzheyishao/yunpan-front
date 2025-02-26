@@ -4,6 +4,7 @@ import Message from '@/utils/Message'
 import { ElLoading } from 'element-plus'
 
 import { useRouter } from 'vue-router'
+import Util from './Util'
 
 const contentTypeForm = 'application/x-www-form-urlencoded;charset=UTF-8'
 const contentTypeJson = 'application/json'
@@ -75,13 +76,17 @@ const request = (config)=>{
     // console.log(config);
     const { url, params, dataType, showLoading = true, responseType = responseTypeJson, method = 'post' } = config;
     let contentType = contentTypeForm;
-    let formData = new FormData();
-    for (let key in params) {
-        formData.append(key, params[key] == undefined ? "" : params[key]);
-    }
+    let formData
     if (dataType != null && dataType == 'json') {
+        formData = params
         contentType = contentTypeJson;
+    } else {
+        formData = new FormData();
+        for (let key in params) {
+            formData.append(key, params[key] == undefined ? "" : params[key]);
+        }
     }
+    
     let headers = {
         'Content-Type': contentType,
         'X-Requested-With': 'XMLHttpRequest',

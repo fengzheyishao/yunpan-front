@@ -105,7 +105,7 @@
                     {{ formatRemainingDays(row.expireTime) }}
                   </div>
                 </template>
-                <template #operation="{ row }">
+                <template #operation="{ row, index }">
                   <el-button round small @click="extendDialogShow(row)">延长</el-button>
                 </template>
               </Table>
