@@ -27,6 +27,7 @@
           <el-form-item label="备注">
             <el-input
               type="textarea"
+              v-model="formData.notes"
               clearable
               placeholder="用户无备注"
               disabled
@@ -130,16 +131,15 @@ const handleChange = async () => {
     if (Util.getObjType(id) !== "array") {
       id = [id];
     }
-    console.log(id)
     let parmas = {
       userIds: id,
       status: statusRequest,
       rejectionReason,
-      query
     };
     let res;
     if (dialogConfig.type === "edit3") {
-      res = await proxy.$api.updateQueryAllUserMemory(parmas);
+      const {pageSize, pageNo, ...data} = query
+      res = await proxy.$api.updateQueryAllUserMemory({...parmas, ...data});
     } else {
       res = await proxy.$api.adminUpdateUserMemory(parmas);
     }

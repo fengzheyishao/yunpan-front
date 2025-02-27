@@ -344,5 +344,18 @@ export default {
       dataType: 'json'
     });
   },
-  
+  deleteUserMemoryById(params) {
+    return request({
+      url: "/admin/deleteUserMemoryById",
+      params,
+      dataType: 'json'
+    });
+  },
+  deleteUserMemoryRequestById(params) {
+    return request({
+      url: "/userMemoryRequest/deleteUserMemoryRequestById",
+      params,
+      dataType: 'json'
+    });
+  },
 };

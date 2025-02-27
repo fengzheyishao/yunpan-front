@@ -11,8 +11,12 @@
         @row-dblclick="dbClick"
         @selection-change="selectionChange"
       >
-        <template #operation="{row, index}">
-          <el-button size="small" @click="applyMemoryDialogRef.show('second', row, refreshList)">重新申请</el-button>
+        <template #operation="{ row, index }">
+          <el-button
+            size="small"
+            @click="applyMemoryDialogRef.show('second', row, refreshList)"
+            >重新申请</el-button
+          >
         </template>
         <template #tableHeader>
           <div class="mt10">
@@ -29,7 +33,7 @@
 import BasicContainer from "@/components/BasicContainer/BasicContainer.vue";
 import ApplyMemoryDialog from "./ApplyMemoryDialog.vue";
 import List from "@/components/ListPage/List.vue";
-import { reactive, ref, getCurrentInstance } from "vue";
+import { reactive, ref, getCurrentInstance, h } from "vue";
 
 const { proxy } = getCurrentInstance();
 const tableSelected = ref([]);
@@ -41,11 +45,36 @@ const applyMemoryDialogRef = ref();
 const buttonList = [
   {
     type: "primary",
+    name: "删除请求",
+    show: true,
+    plain: false,
+    evt: ({ name }) => {
+      if (!tableSelected.value.length) {
+        proxy.Message.warning("请选择需要操作的数据");
+        return true;
+      }
+      confirmMsg({
+        title: "删除",
+        msgTitle: "申请内存删除吗？",
+        msgContent: "您当前选中x条申请内存，删除后不可恢复，请谨慎操作。",
+        callback: async (ids) => {
+          const res = await proxy.$api.deleteUserMemoryRequestById({
+            userIds: ids,
+          });
+          if (!res) return;
+          proxy.Message.success("删除成功");
+          refreshList()
+        },
+      });
+    },
+  },
+  {
+    type: "primary",
     name: "申请内存",
     show: true,
     plain: false,
     evt: ({ name }) => {
-      applyMemoryDialogRef.value.show('first')
+      applyMemoryDialogRef.value.show("first");
     },
   },
 ];
@@ -89,8 +118,8 @@ const listPageData = reactive({
       prop: "requestSize",
       label: "申请内存大小",
       formatter: (val) => {
-        return proxy.Utils.size2Str(val*1024*1024)
-      }
+        return proxy.Utils.size2Str(val * 1024 * 1024);
+      },
     },
     {
       prop: "rejectionReason",
@@ -127,12 +156,45 @@ const listPageData = reactive({
     },
     {
       prop: "operation",
-      fixed: 'right',
+      fixed: "right",
       label: "操作",
     },
   ],
   searchList: [],
 });
+
+const confirmMsg = ({
+  noSelect = false,
+  title,
+  msgTitle,
+  msgContent,
+  callback,
+}) => {
+  if (!tableSelected.value.length && !noSelect) {
+    proxy.Message.warning("请选择需要操作的数据");
+    return;
+  }
+  proxy.Message.confirm({
+    confirmButtonText: "确定",
+    cancelButtonText: "取消",
+    title,
+    message: h("div", null, [
+      h("p", { style: "color: #323232" }, `您确定要将该${msgTitle}`),
+      h(
+        "p",
+        { style: "color: #909399" },
+        msgContent.replace("x", tableSelected.value.length)
+      ),
+    ]),
+    type: "warning",
+    callback: (action) => {
+      if (action === "confirm") {
+        const ids = tableSelected.value.map((item) => item.id);
+        callback && callback(ids);
+      }
+    },
+  });
+};
 
 const requestListData = (params) => {
   const { requestTime, ...data } = params;
@@ -162,7 +224,7 @@ const requestListData = (params) => {
 };
 
 const dbClick = (row) => {
-  applyMemoryDialogRef.value.show('read', row, refreshList)
+  applyMemoryDialogRef.value.show("read", row, refreshList);
 };
 
 const selectionChange = (val) => {

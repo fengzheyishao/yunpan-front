@@ -157,7 +157,7 @@ const applyFunction = () => {
     };
     let res;
     if (dialogConfig.type === "second") {
-      if (status !== 2) {
+      if (status !== 1) {
         res = await proxy.$api.updateUserMemoryRequestById({ ...parmas, id });
       } else {
         res = await proxy.$api.addUserMemoryApply(parmas);

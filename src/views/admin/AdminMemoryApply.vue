@@ -34,7 +34,7 @@
 import BasicContainer from "@/components/BasicContainer/BasicContainer.vue";
 import SysMemoryDialog from "./SysMemoryDialog.vue";
 import List from "@/components/ListPage/List.vue";
-import { reactive, ref, getCurrentInstance } from "vue";
+import { reactive, ref, getCurrentInstance, h } from "vue";
 
 const { proxy } = getCurrentInstance();
 const tableSelected = ref([]);
@@ -44,20 +44,49 @@ const memoryListRef = ref();
 const sysMemoryDialogRef = ref();
 const buttonList = [
   {
+    type: "primary",
+    name: "删除请求",
+    show: true,
+    plain: false,
+    evt: ({ name }) => {
+      if (!tableSelected.value.length) {
+        proxy.Message.warning("请选择需要操作的数据");
+        return true;
+      }
+      confirmMsg({
+        title: "删除",
+        msgTitle: "申请内存删除吗？",
+        msgContent: "您当前选中x条申请内存，删除后不可恢复，请谨慎操作。",
+        callback: async (ids) => {
+          const res = await proxy.$api.deleteUserMemoryById({
+            userIds: ids,
+          });
+          if (!res) return;
+          proxy.Message.success("删除成功");
+          refreshList()
+        },
+      });
+    },
+  },
+  {
     name: "批量审批",
     show: true,
     plain: false,
     evt: ({ name }) => {
       if (tableSelected.value < 1) {
-        proxy.Message.warning('请选择要审核的目标')
-        return
+        proxy.Message.warning("请选择要审核的目标");
+        return;
       }
-      const index = tableSelected.value.findIndex((item) => item.status !== 0)
-      if (index === -1) {
-        proxy.Message.warning('有已审核目标')
-        return
+      const index = tableSelected.value.findIndex((item) => item.status !== 0);
+      if (index !== -1) {
+        proxy.Message.warning("有已审核目标");
+        return;
       }
-      sysMemoryDialogRef.value.show({id: getSelectedDataId(), status: 0}, 'edit2', refreshList)
+      sysMemoryDialogRef.value.show(
+        { id: getSelectedDataId(), status: 0 },
+        "edit2",
+        refreshList
+      );
     },
   },
   {
@@ -65,8 +94,12 @@ const buttonList = [
     show: true,
     plain: false,
     evt: ({ name }) => {
-      proxy.Message.warning('请选择要审核的内容')
-      sysMemoryDialogRef.value.show({id: getSelectedDataId(), status: 0, query: searchParams.value}, 'edit3', refreshList)
+      proxy.Message.warning("注意查询条件");
+      sysMemoryDialogRef.value.show(
+        { id: getSelectedDataId(), status: 0, query: searchParams.value },
+        "edit3",
+        refreshList
+      );
     },
   },
 ];
@@ -119,7 +152,7 @@ const listPageData = reactive({
       prop: "requestSize",
       label: "申请内存大小",
       formatter: (val) => {
-        return proxy.Utils.size2Str(val*1024*1024);
+        return proxy.Utils.size2Str(val * 1024 * 1024);
       },
       search: {
         type: "input",
@@ -180,6 +213,39 @@ const listPageData = reactive({
   searchList: [],
 });
 
+const confirmMsg = ({
+  noSelect = false,
+  title,
+  msgTitle,
+  msgContent,
+  callback,
+}) => {
+  if (!tableSelected.value.length && !noSelect) {
+    proxy.Message.warning("请选择需要操作的数据");
+    return;
+  }
+  proxy.Message.confirm({
+    confirmButtonText: "确定",
+    cancelButtonText: "取消",
+    title,
+    message: h("div", null, [
+      h("p", { style: "color: #323232" }, `您确定要将该${msgTitle}`),
+      h(
+        "p",
+        { style: "color: #909399" },
+        msgContent.replace("x", tableSelected.value.length)
+      ),
+    ]),
+    type: "warning",
+    callback: (action) => {
+      if (action === "confirm") {
+        const ids = tableSelected.value.map((item) => item.id);
+        callback && callback(ids);
+      }
+    },
+  });
+};
+
 const requestListData = (params) => {
   const { requestTime, rejectionReason, ...data } = params;
   const query = {
@@ -230,8 +296,8 @@ const refreshList = () => {
 };
 
 const getSelectedDataId = () => {
-  return tableSelected.value.map((i) => i.id)
-}
+  return tableSelected.value.map((i) => i.id);
+};
 </script>
 
 <style lang="less" scoped>
