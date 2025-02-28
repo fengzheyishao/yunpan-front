@@ -41,3 +41,11 @@ const isOverflow = () => {
   }
 }
 </script>
+
+<style lang="less" scoped>
+.text-overflow {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+</style>

@@ -358,4 +358,22 @@ export default {
       dataType: 'json'
     });
   },
+  getLogList(params) {
+    return request({
+      url: "/admin/selectLog",
+      params,
+    });
+  },
+  deleteRequestLogById(params) {
+    return request({
+      url: "/admin/deleteRequestLogById",
+      params,
+    });
+  },
+  deleteRequestLogByQuery(params) {
+    return request({
+      url: "/admin/deleteRequestLogByQuery",
+      params,
+    });
+  },
 };

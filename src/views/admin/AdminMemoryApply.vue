@@ -95,6 +95,7 @@ const buttonList = [
     plain: false,
     evt: ({ name }) => {
       proxy.Message.warning("注意查询条件");
+      saveSearchParams()
       sysMemoryDialogRef.value.show(
         { id: getSelectedDataId(), status: 0, query: searchParams.value },
         "edit3",
@@ -245,6 +246,31 @@ const confirmMsg = ({
     },
   });
 };
+
+const saveSearchParams = () => {
+  const { requestTime, rejectionReason, ...data } = memoryListRef.value.getSearchData()
+  const query = {
+    ...data,
+  };
+  if (requestTime) {
+    Object.assign(query, {
+      requestTimeStart: requestTime ? `${requestTime[0]} 00:00:00` : "",
+      requestTimeEnd: requestTime ? `${requestTime[1]} 23:59:59` : "",
+    });
+  }
+  if (rejectionReason) {
+    Object.assign(query, {
+      rejectionReasonStart: rejectionReason
+        ? `${rejectionReason[0]} 00:00:00`
+        : "",
+      rejectionReasonEnd: rejectionReason
+        ? `${rejectionReason[1]} 23:59:59`
+        : "",
+    });
+  }
+  searchParams.value = query;
+}
+
 
 const requestListData = (params) => {
   const { requestTime, rejectionReason, ...data } = params;

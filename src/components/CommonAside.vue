@@ -140,6 +140,11 @@ const itemBoby = [
     children: [
       {
         icon: "Setting",
+        path: "/settings/logger",
+        name: "日志查看",
+      },
+      {
+        icon: "Setting",
         name: "用户文件",
         path: "/settings/fileList",
       },

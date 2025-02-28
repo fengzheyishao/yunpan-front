@@ -98,6 +98,15 @@ const router = createRouter({
           },
           component: () => import("@/views/admin/AdminMemoryApply.vue")
         },
+        {
+          path: '/settings/logger',
+          name: '日志查看',
+          meta: {
+            needLogin: true,
+            menuCode: "settings"
+          },
+          component: () => import("@/views/admin/LoggerView.vue")
+        },
       ]
     },
     {

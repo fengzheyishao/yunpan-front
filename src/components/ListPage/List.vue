@@ -159,6 +159,9 @@ const handleCurrentChange = (val) => {
   currentPage.value = val
   searchClick()
 }
+const getSearchData = () => {
+  return searchRef.value?.searchParam
+}
 const resetForm = () => {
   tableRef.value.clearSelection()
   props.resetForm()
@@ -183,7 +186,7 @@ const renderData = async (query = {}) => {
 const getSelectData = () => {
   return tableRef.value.getSelectionRows()
 }
-defineExpose({ searchClick, renderData, getSelectData, tableRef })
+defineExpose({ searchClick, renderData, getSelectData, tableRef, getSearchData })
 
 onBeforeMount(() => {
   if (props.dataList.length) return

@@ -71,9 +71,9 @@
         </el-form-item>
         <template v-if="dialogConfig.type !== 'first'">
           <el-form-item label="申请状态" disabled>
-            <el-tag v-if="formData.status === 0" info>待批准</el-tag>
-            <el-tag v-if="formData.status === 1" success>已批准</el-tag>
-            <el-tag v-if="formData.status === 2" error>已拒绝</el-tag>
+            <el-tag v-if="formData.status === 0" type="info">待批准</el-tag>
+            <el-tag v-if="formData.status === 1" type="success">已批准</el-tag>
+            <el-tag v-if="formData.status === 2" type="error">已拒绝</el-tag>
           </el-form-item>
           <el-form-item label="审批时间" disabled>
             <el-input
