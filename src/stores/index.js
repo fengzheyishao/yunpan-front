@@ -49,6 +49,8 @@ export const useAllDateStores = defineStore('allData', () => {
       filePid: filePid,
       //错误信息
       errorMsg: null,
+      // 上传状态
+      uploadStatus: false
     }
     state.value.fileList.unshift(fileItem);
     if (fileItem.totalSize == 0) {
@@ -70,5 +72,9 @@ export const useAllDateStores = defineStore('allData', () => {
     state.value.spacePercent = res;
   }
 
-  return { state, clean, addFile, reloadSpacePercent }
+  async function startUploadFile(uid, chunkIndex) {
+    await UploadMethod.uploadFile(uid, state, chunkIndex);
+  }
+
+  return { state, clean, addFile, reloadSpacePercent, startUploadFile }
 })

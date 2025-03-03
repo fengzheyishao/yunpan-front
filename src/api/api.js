@@ -69,7 +69,7 @@ export default {
       errorCallback,
     });
   },
-  uploadFile(params, uploadProgressCallback, errorCallback) {
+  uploadFile(params, uploadProgressCallback, errorCallback, callback) {
     return request({
       url: "/file/uploadFile",
       showLoading: false,
@@ -78,6 +78,7 @@ export default {
       params,
       uploadProgressCallback,
       errorCallback,
+      callback
     });
   },
   loadAllFolder(params, errorCallback) {
@@ -376,4 +377,11 @@ export default {
       params,
     });
   },
+  deleteUploadFile(params) {
+    return request({
+      url: "/file/deleteUploadFile",
+      params,
+      showLoading: false,
+    });
+  }
 };

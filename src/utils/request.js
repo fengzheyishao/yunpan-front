@@ -43,10 +43,11 @@ service.interceptors.request.use(
 service.interceptors.response.use(
     (response)=>{
         // console.log(response);
-        const { showLoading, errorCallback, showError = true, responseType } = response.config;
+        const { showLoading, errorCallback, callback, showError = true, responseType } = response.config;
         if (showLoading && loading) {
             loading.close();
         }
+        callback && callback()
         const {code, data, info} = response.data;
         if (responseType == "arraybuffer" || responseType == "blob") {
             return response.data;
@@ -74,7 +75,7 @@ service.interceptors.response.use(
 
 const request = (config)=>{
     // console.log(config);
-    const { url, params, dataType, showLoading = true, responseType = responseTypeJson, method = 'post' } = config;
+    const { url, params, dataType, callback, showLoading = true, responseType = responseTypeJson, method = 'post' } = config;
     let contentType = contentTypeForm;
     let formData
     if (dataType != null && dataType == 'json') {
@@ -104,6 +105,7 @@ const request = (config)=>{
         headers: headers,
         showLoading: showLoading,
         errorCallback: config.errorCallback,
+        callback: callback,
         showError: config.showError
     }).then((res)=>{return res;}).catch(error=>{
         console.log(error);

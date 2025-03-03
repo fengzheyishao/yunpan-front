@@ -35,7 +35,7 @@
                 ? item.errorMessages
                 : STATUS[item.status].desc
             }}</span>
-            <span
+            <span v-if="item.status !== STATUS.init.value"
               >{{ proxy.Utils.size2Str(item.uploadSize) }}/{{
                 proxy.Utils.size2Str(item.totalSize)
               }}</span
@@ -51,14 +51,14 @@
           />
           <div class="op-btn" v-if="item.status === STATUS.uploading.value">
             <el-icon
-              v-if="item.pause"
+              v-if="item.pause && !item.uploadStatus"
               class="icon"
               title="上传"
               @click="startUpload(item.uid)"
             >
               <VideoPlay />
             </el-icon>
-            <el-icon class="icon" title="暂停" @click="pauseUpload(item.uid)">
+            <el-icon v-else class="icon" title="暂停" @click="pauseUpload(item.uid)">
               <VideoPause />
             </el-icon>
             <el-icon
@@ -145,6 +145,25 @@ const fileList = computed(() => {
   return store.state.fileList;
 });
 
+const startUpload = (uid) => {
+  const file = getFileByUid(uid)
+  if (!file.pause) {
+    proxy.Message.warning('正在开始上传，请等待')
+    return 
+  }
+  file.pause = false
+  store.startUploadFile(uid, file.chunkIndex)
+}
+
+const pauseUpload = (uid) => {
+  let file = getFileByUid(uid)
+  if (file.pause === true) {
+    proxy.Message.warning('正在取消上传，请等待')
+    return 
+  }
+  file.pause = true
+}
+
 const getFileByUid = (uid) => {
   let file = store.state.fileList.find((item) => {
     return item.file.uid === uid;
@@ -153,11 +172,15 @@ const getFileByUid = (uid) => {
 };
 
 const delUpload = (uid) => {
+  const delIndex = store.state.delList.indexOf(uid)
+  if (delIndex !== -1) {
+    proxy.Message.warning('正在取消上传，请等待')
+  } 
+  delFile(uid)
   store.state.delList.push(uid);
 };
 
 const delFile = (uid) => {
-  debugger;
   let delIndex = -1;
   for (let i = 0; i < store.state.fileList.length; i++) {
     if (store.state.fileList[i].uid == uid) {
